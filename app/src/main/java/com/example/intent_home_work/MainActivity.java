@@ -11,7 +11,6 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
     EditText to,subject,message;
-    Button send;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,16 +18,25 @@ public class MainActivity extends AppCompatActivity {
         to = findViewById(R.id.edit_to);
         subject = findViewById(R.id.edit_subject);
         message = findViewById(R.id.edit_message);
-        send = findViewById(R.id.btn_send);
+        Button send = findViewById(R.id.btn_send);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("mailto:" + to.getText().toString()));
-                intent.putExtra(Intent.EXTRA_SUBJECT,subject.getText().toString());
-                intent.putExtra(Intent.EXTRA_TEXT,message.getText().toString());
-                startActivity(intent);
+                mail();
             }
         });
+    }
+    private void mail(){
+        String list = to.getText().toString();
+        String[] re = list.split(",");
+        String su = subject.getText().toString();
+        String me = message.getText().toString();
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_EMAIL,re);
+        intent.putExtra(Intent.EXTRA_SUBJECT,su);
+        intent.putExtra(Intent.EXTRA_TEXT,me);
+        intent.setType("message/rfc822");
+        startActivity(Intent.createChooser(intent,"Choose email client:"));
     }
 }
